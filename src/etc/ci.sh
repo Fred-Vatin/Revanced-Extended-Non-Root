@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./utils.sh
+source ./src/etc/utils.sh
 
 # Check new patch:
 get_date() {
