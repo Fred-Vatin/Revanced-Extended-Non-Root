@@ -56,6 +56,8 @@ jobs:
         id: release-rv
         if: steps.check-gh-rv.outputs.internet_error == '0'
         uses: ./.github/actions/release
+        with:
+          next_tag: ${{ needs.set-next-tag.outputs.next_tag }}
   patch_rv_beta:
     name: Patch Revanced Beta
     if: ${{ github.event.inputs.org == 'Revanced Beta' || inputs.org == 'Revanced Beta' }}
@@ -80,6 +82,8 @@ jobs:
         id: release-rvb
         if: steps.check-gh-rvb.outputs.internet_error == '0'
         uses: ./.github/actions/release
+        with:
+          next_tag: ${{ needs.set-next-tag.outputs.next_tag }}
   patch_rve:
     name: Patch Revanced Extended Stable
     if: ${{ github.event.inputs.org == 'Revanced Extended' || inputs.org == 'Revanced Extended' }}
@@ -104,6 +108,8 @@ jobs:
         id: release-rve
         if: steps.check-gh-rve.outputs.internet_error == '0'
         uses: ./.github/actions/release
+        with:
+          next_tag: ${{ needs.set-next-tag.outputs.next_tag }}
   patch_rve_beta:
     name: Patch Revanced Extended Beta
     if: ${{ github.event.inputs.org == 'Revanced Extended Beta' || inputs.org == 'Revanced Extended Beta' }}
@@ -128,3 +134,5 @@ jobs:
         id: release-rve-beta
         if: steps.check-gh-rve-beta.outputs.internet_error == '0'
         uses: ./.github/actions/release
+        with:
+          next_tag: ${{ needs.set-next-tag.outputs.next_tag }}
