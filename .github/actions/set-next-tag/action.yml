@@ -10,15 +10,24 @@ outputs:
     description: 'Next tag for the release'
 runs:
   using: "composite"
+  env:
+    SET_TAG_SCRIPT: ./src/etc/setTag.sh
+        
   steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: true
+  
+    - name: Check if setTag.sh exists
+      run: if [ ! -f $SET_TAG_SCRIPT ]; then echo -e "::error::utils.sh [-] File not found: $SET_TAG_SCRIPT\n"; exit 1; fi
+  
     - name: Make setTag.sh executable
-      run: chmod +x ./src/etc/setTag.sh
+      run: chmod +x $SET_TAG_SCRIPT
+  
     - name: Get next tag
       id: next_tag
       shell: bash
-      run: ./src/etc/setTag.sh ${{ inputs.current-tag }}
+      run: $SET_TAG_SCRIPT ${{ inputs.current-tag }}
+
