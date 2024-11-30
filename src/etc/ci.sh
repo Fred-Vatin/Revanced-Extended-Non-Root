@@ -27,10 +27,10 @@ checker(){
 	date2_sec=$(date -d "$date2" +%s)
 	if [ -z "$date2" ] || [ "$date1_sec" -gt "$date2_sec" ]; then
 		echo "new_patch=1" >> $GITHUB_OUTPUT
-		echoOK "New patch, building..."
+		green_log "New patch, building..."
 	elif [ "$date1_sec" -lt "$date2_sec" ]; then
 		echo "new_patch=0" >> $GITHUB_OUTPUT
-		echoOK "Old patch, not build."
+		green_log "Old patch, not build."
 	fi
 }
 checker $1 $2 $3
