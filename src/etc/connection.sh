@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./utils.sh
+source ./src/etc/utils.sh
 
 # Check github connection stable or not:
 check_connection() {
