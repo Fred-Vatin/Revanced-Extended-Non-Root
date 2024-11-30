@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ./utils.sh
+
 # Check new patch:
 get_date() {
 	json=$(wget -qO- "https://api.github.com/repos/$1/releases")
@@ -25,10 +27,10 @@ checker(){
 	date2_sec=$(date -d "$date2" +%s)
 	if [ -z "$date2" ] || [ "$date1_sec" -gt "$date2_sec" ]; then
 		echo "new_patch=1" >> $GITHUB_OUTPUT
-		echo -e "\e[32mNew patch, building...\e[0m"
+		echoOK "New patch, building..."
 	elif [ "$date1_sec" -lt "$date2_sec" ]; then
 		echo "new_patch=0" >> $GITHUB_OUTPUT
-		echo -e "\e[32mOld patch, not build.\e[0m"
+		echoOK "Old patch, not build."
 	fi
 }
 checker $1 $2 $3
