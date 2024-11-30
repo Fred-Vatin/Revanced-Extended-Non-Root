@@ -21,14 +21,6 @@ revanced_dl(){
 	get_patches_key "youtube-revanced" 
 	split_editor "youtube-beta" "youtube-beta-armeabi-v7a" "exclude" "split_config.arm64_v8a split_config.x86 split_config.x86_64"
 	patch "youtube-beta-armeabi-v7a" "revanced"
-	# Patch Youtube x86
-	get_patches_key "youtube-revanced" 
-	split_editor "youtube-beta" "youtube-beta-x86" "exclude" "split_config.arm64_v8a split_config.armeabi_v7a split_config.x86_64"
-	patch "youtube-beta-x86" "revanced"
-	# Patch Youtube x86_64
-	get_patches_key "youtube-revanced" 
-	split_editor "youtube-beta" "youtube-beta-x86_64" "exclude" "split_config.arm64_v8a split_config.armeabi_v7a split_config.x86"
-	patch "youtube-beta-x86_64" "revanced"
 }
 2() {
 	revanced_dl
