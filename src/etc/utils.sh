@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 green_log() { echo -e "\033[0;32m[+] ${1}\033[0m"; }
 
