@@ -11,6 +11,13 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: true
+    - name: Make setTag.sh executable
+      run: chmod +x ./src/etc/setTag.sh
     - name: Get next tag
       id: next_tag
       shell: bash
