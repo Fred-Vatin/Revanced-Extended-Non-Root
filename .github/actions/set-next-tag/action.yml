@@ -13,6 +13,7 @@ runs:
   steps:
     - name: Get next tag
       id: next_tag
+      shell: bash
       run: |
         TAG=$(gh release list -L 1 | awk -F '\t' '{print $3}')
         if [ -z "$TAG" ]; then TAG=${{ inputs.current-tag }}; fi
