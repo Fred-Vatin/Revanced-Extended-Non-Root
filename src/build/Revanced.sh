@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Revanced build
 source ./src/build/utils.sh
 # Download requirements
