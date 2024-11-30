@@ -13,7 +13,7 @@ output=$(wget -qO- https://www.cloudflare.com/cdn-cgi/trace | awk -F'=' '/ip|col
 echo "$output"
 warp=$(echo "$output" | awk -F':' '/warp/ {print $2}')
 if [ "$warp" = " on" ]; then
-  echo -e "\e[32m[+] Successful install Cloudflare Warp\e[0m"
+  echoOK "Successful install Cloudflare Warp"
 else
-  echo -e "\e[31m[-] Can't install Cloudflare Warp\e[0m"
+  echoErr "Can't install Cloudflare Warp"
 fi
