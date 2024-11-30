@@ -1,0 +1,21 @@
+name: Set Next Tag
+description: Get the next tag for the release
+inputs:
+  current-tag:
+    description: 'Current tag for the release'
+    required: false
+    default: '0'
+outputs:
+  next_tag:
+    description: 'Next tag for the release'
+runs:
+  using: "composite"
+  steps:
+    - name: Get next tag
+      id: next_tag
+      run: |
+        TAG=$(gh release list -L 1 | awk -F '\t' '{print $3}')
+        if [ -z "$TAG" ]; then TAG=${{ inputs.current-tag }}; fi
+        NEXT_TAG=$((TAG + 1))
+        echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
+        echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
