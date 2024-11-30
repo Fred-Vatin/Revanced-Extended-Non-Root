@@ -11,7 +11,7 @@ on:
       org:
         description: 'Which "Revanced" do you want to patch?'
         required: true
-        default: 'Revanced'
+        default: 'Revanced Extended'
         type: choice
         options:
           - 'Revanced'
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        run: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        run: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        run: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        run: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        run: [1, 2, 3]
+        run: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        run: [1, 2, 3]
+        run: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
