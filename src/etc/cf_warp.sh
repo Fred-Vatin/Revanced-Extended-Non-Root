@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source ./utils.sh
+source ./src/etc/utils.sh
 
 # Setup Cloudflare warp for bypass cloudflare anti ddos APKMirror:
 curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
