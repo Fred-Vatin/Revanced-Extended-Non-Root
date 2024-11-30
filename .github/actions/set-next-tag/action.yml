@@ -14,10 +14,4 @@ runs:
     - name: Get next tag
       id: next_tag
       shell: bash
-      run: |
-        TAG=$(gh release list -L 1 | awk -F '\t' '{print $3}')
-        if [ -z "$TAG" ]; then TAG=${{ inputs.current-tag }}; fi
-        NEXT_TAG=$((TAG + 1))
-        echo "NEXT_TAG=$NEXT_TAG"
-        echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
-        echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
+      run: ./src/etc/setTag.sh ${{ inputs.current-tag }}
