@@ -1,4 +1,10 @@
 name: Releasing APK files
+
+inputs:
+  next_tag:
+    description: 'Next tag for the release'
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -18,7 +24,7 @@ runs:
       with:
         artifacts: |
           ./release/*.apk
-        name: Revanced & Revanced Extended
-        tag: all
+        name: "Revanced & Revanced Extended"
+        tag: ${{ inputs.next_tag }}
         bodyFile: ${{ github.workspace }}-CHANGELOG.txt
         allowUpdates: true
