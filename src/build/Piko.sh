@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Twitter Piko
 source src/build/utils.sh
 
