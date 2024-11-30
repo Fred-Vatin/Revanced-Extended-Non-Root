@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-source ../etc/utils.sh
+source src/etc/utils.sh
 
 mkdir ./release ./download
 
