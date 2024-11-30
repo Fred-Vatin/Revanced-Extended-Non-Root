@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echoOK() { echo -e "\033[0;32m[+] ${1}\033[0m"; }
+green_log() { echo -e "\033[0;32m[+] ${1}\033[0m"; }
 
-echoErr() {
+red_log() {
 	echo >&2 -e "\033[0;31m[-] ${1}\033[0m"
 	if [ "${GITHUB_REPOSITORY-}" ]; then echo -e "::error::utils.sh [-] ${1}\n"; fi
 }
