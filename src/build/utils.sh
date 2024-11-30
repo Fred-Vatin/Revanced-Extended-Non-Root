@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ../etc/utils.sh
+
 mkdir ./release ./download
 
 #Setup HTMLQ for download apk files
@@ -9,16 +11,6 @@ HTMLQ="./htmlq"
 #Setup APKEditor for install combine split apks
 wget -q -O ./APKEditor.jar https://github.com/REAndroid/APKEditor/releases/download/V1.4.1/APKEditor-1.4.1.jar
 APKEditor="./APKEditor.jar"
-
-#################################################
-
-# Colored output logs
-green_log() {
-    echo -e "\e[32m$1\e[0m"
-}
-red_log() {
-    echo -e "\e[31m$1\e[0m"
-}
 
 #################################################
 
