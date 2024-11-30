@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source ./utils.sh
 
 # Setup Cloudflare warp for bypass cloudflare anti ddos APKMirror:
