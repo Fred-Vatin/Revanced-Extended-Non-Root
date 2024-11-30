@@ -1,5 +1,5 @@
-#!/bin/bash
-#source ./utils.sh
+#!/usr/bin/env bash
+source ./utils.sh
 
 # Vérifier si un tag courant est passé en paramètre
 CURRENT_TAG=$1
