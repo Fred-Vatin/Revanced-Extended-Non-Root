@@ -18,6 +18,12 @@ runs:
         [Revanced Extended](https://github.com/inotia00/revanced-patches/releases)
         "> ${{ github.workspace }}-CHANGELOG.txt
 
+    - name: Create tag
+      shell: bash
+      run: |
+        echo "Create tag: ${{ inputs.next_tag }}
+        git tag -f ${{ inputs.next_tag }};git push -f origin ${{ inputs.next_tag }}
+      
     - name: Release
       uses: ncipollo/release-action@v1.14.0
       with:
