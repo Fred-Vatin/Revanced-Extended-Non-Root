@@ -47,10 +47,12 @@ jobs:
     env:
       NEXT_TAG: ${{needs.set-next-tag.outputs.output1}}
     steps:
-      - name: Check tag
-        run: bash src/etc/setTag.sh --check $NEXT_TAG
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Check tag
+        uses: ./.github/actions/check-next-tag
+        with:
+          next_tag: $NEXT_TAG
       - name: Check github connection
         id: check-gh-test
         run: bash src/etc/connection.sh
