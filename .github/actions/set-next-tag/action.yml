@@ -26,4 +26,4 @@ runs:
     - name: Get next tag
       id: get_next_tag
       shell: bash
-      run: ./src/etc/setTag.sh
+      run: ./src/etc/setTag.sh --set
