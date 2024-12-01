@@ -27,10 +27,3 @@ NEXT_TAG=$((TAG + 1))
 green_log "NEXT_TAG=$NEXT_TAG"
 echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
 echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
-
-# Dépannage: Afficher les contenus des fichiers d'environnement
-echo "Contenu de GITHUB_ENV:"
-cat $GITHUB_ENV
-
-echo "Contenu de GITHUB_OUTPUT:"
-cat $GITHUB_OUTPUT
