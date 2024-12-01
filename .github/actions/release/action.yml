@@ -5,7 +5,9 @@ inputs:
   next_tag:
     description: 'Next tag for the release'
     required: true
-
+  github_token:
+    description: 'GitHub token for authentication'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -28,7 +30,7 @@ runs:
       uses: svenstaro/upload-release-action@v2
       with:
         body: ${{ github.workspace }}-CHANGELOG.txt
-        repo_token: $GITHUB_TOKEN
+        repo_token: ${{ inputs.github_token }}
         file: ./*.{txt,apk}
         release_name: "Revanced & Revanced Extended"
         tag: ${{ inputs.next_tag }}
