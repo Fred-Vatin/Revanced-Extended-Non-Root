@@ -8,6 +8,6 @@ red_log() {
 }
 
 abort() {
-	echoErr "ABORT: ${1-}"
+	red_log "ABORT: ${1-}"
 	exit 1
 }
