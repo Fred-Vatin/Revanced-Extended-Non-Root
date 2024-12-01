@@ -33,6 +33,6 @@ runs:
         artifacts: ./release/*.apk,./test-file.txt
         name: "Revanced & Revanced Extended"
         commit: main
-        tag: ${{ inputs.next_tag }}
+        tag: 1
         bodyFile: ${{ github.workspace }}-CHANGELOG.txt
         allowUpdates: true
