@@ -21,7 +21,7 @@ runs:
     - name: Create tag
       shell: bash
       run: |
-        echo "Create tag: ${{ inputs.next_tag }}
+        echo "Create tag: ${{ inputs.next_tag }}"
         git tag -f ${{ inputs.next_tag }};git push -f origin ${{ inputs.next_tag }}
       
     - name: Release
