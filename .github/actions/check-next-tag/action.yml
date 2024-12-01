@@ -10,13 +10,7 @@ outputs:
     value: ${{ steps.check_next_tag.outputs.check_tag }}
 runs:
   using: "composite"
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        submodules: true
-        
+  steps:       
     - name: Check if setTag.sh exists
       shell: bash
       run: |
