@@ -28,7 +28,7 @@ runs:
       uses: svenstaro/upload-release-action@v2
       with:
         body: ${{ github.workspace }}-CHANGELOG.txt
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        repo_token: $GITHUB_TOKEN
         file: ./*.{txt,apk}
         release_name: "Revanced & Revanced Extended"
         tag: ${{ inputs.next_tag }}
