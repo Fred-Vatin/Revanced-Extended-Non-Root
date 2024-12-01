@@ -27,10 +27,10 @@ show_help() {
 }
 
 # Use getopt to process args
-OPTIONS=$(getopt -o hc: --long help,check,set: -- "$@")
+OPTIONS=$(getopt -o hc: --long help,check:,set -- "$@")
 if [ $? -ne 0 ]; then
     show_help
-    abort "Unvalide argument"
+    abort "Unvalid argument"
 fi
 
 eval set -- "$OPTIONS"
