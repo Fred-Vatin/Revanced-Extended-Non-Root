@@ -15,20 +15,23 @@ fi
 
 # display help function
 show_help() {
-    echo "Usage: $0 [--check <number>] [--set]"
-    echo "Use one or the other."
-    echo "--check"
-    echo "type: variable containing a number > 0."
-    echo "Returns a boolean and if false, abort workflow"
+		echo ""
+    blue_log "Usage: $0 [--check <number>] [--set]"
+    blue_log "Use one or the other option."
+		echo ""
+    blue_log "--check"
+    blue_log "- type: variable containing a number > 0."
+    blue_log "- Returns a boolean and if false, abort workflow"
     echo ""
-    echo "--set"
-    echo "type: boolean, default: true"
-    echo "Returns the next_tag in \$GITHUB_OUTPUT"
+    blue_log "--set"
+    blue_log "- type: boolean, default: true"
+    blue_log "- Returns the next_tag in \$GITHUB_OUTPUT"
 }
 
 # Use getopt to process args
 OPTIONS=$(getopt -o hc: --long help,check:,set -- "$@")
 if [ $? -ne 0 ]; then
+		echo "OPTIONS ERROR"
     show_help
     abort "Unvalid argument"
 fi
@@ -80,18 +83,6 @@ while true; do
             ;;
     esac
 done
-
-# if --check and --set are both used abort
-if [ "$CHECK" != "null" ] && [ "$SET" = true ]; then
-    show_help
-    abort "--check and --set options cannot be used together."
-fi
-
-# when --check is a positive number
-if [ "$CHECK" != "null" ]; then
-    echo "[--check] option is set with value: $CHECK"
-    exit 0    
-fi
 
 # when option --set is used
 if [ "$SET" = true ]; then
