@@ -25,11 +25,12 @@ runs:
         git tag -f ${{ inputs.next_tag }};git push -f origin ${{ inputs.next_tag }}
       
     - name: Release
-      uses: ncipollo/release-action@v1.14.0
-      with:
-        artifacts: ./release/*.apk,./test-file.txt
-        name: "Revanced & Revanced Extended"
-        #commit: main
-        tag: ${{ inputs.next_tag }}
-        bodyFile: ${{ github.workspace }}-CHANGELOG.txt
-        allowUpdates: true
+        uses: svenstaro/upload-release-action@v2
+        with:
+          body: ${{ github.workspace }}-CHANGELOG.txt
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./*.{txt,apk}
+          release_name: "Revanced & Revanced Extended"
+          tag: ${{ inputs.next_tag }}
+          file_glob: true
+          overwrite: true
