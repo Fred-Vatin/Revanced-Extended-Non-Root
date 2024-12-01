@@ -5,9 +5,6 @@ inputs:
   next_tag:
     description: 'Next tag for the release'
     required: true
-  github_token:
-    description: 'GitHub token for authentication'
-    required: true
 runs:
   using: "composite"
   steps:
@@ -20,12 +17,9 @@ runs:
         [Revanced Extended](https://github.com/inotia00/revanced-patches/releases)
         "> ${{ github.workspace }}-CHANGELOG.txt
 
-    - name: Create tag
+    - name: Set NEXT_TAG environment variable
       shell: bash
-      run: |
-        echo "Create tag: ${{ inputs.next_tag }}"
-        echo "github.ref_name: ${{ github.ref_name }}"
-        # git tag -f ${{ inputs.next_tag }};git push -f origin ${{ inputs.next_tag }}
+      run: echo "NEXT_TAG=${{ inputs.next_tag }}" >> $GITHUB_ENV
       
     - name: Release
       uses: ncipollo/release-action@v1.14.0
@@ -33,6 +27,6 @@ runs:
         artifacts: ./release/*.apk,./test-file.txt
         name: "Revanced & Revanced Extended"
         commit: main
-        tag: 1
+        tag: ${{ env.NEXT_TAG }}
         bodyFile: ${{ github.workspace }}-CHANGELOG.txt
         allowUpdates: true
