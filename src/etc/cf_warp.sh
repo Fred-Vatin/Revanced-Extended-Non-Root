@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 source ./src/etc/utils.sh
 
+# -- check if utils is loaded --
+if declare -f green_log > /dev/null; then
+  green_log "utils.sh has been loaded"
+else
+  message="utils.sh can not be loaded"
+  echo >&2 -e "\033[0;31m[-] $message\033[0m"
+  if [ "${GITHUB_REPOSITORY-}" ]; then 
+    echo -e "::error::ABORT-$message\n"
+    exit 1
+  fi
+fi
+
 # Setup Cloudflare warp for bypass cloudflare anti ddos APKMirror:
 curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
