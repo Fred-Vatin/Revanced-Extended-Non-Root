@@ -1,10 +1,5 @@
 name: Set Next Tag
 description: Get the next tag for the release
-inputs:
-  current-tag:
-    description: 'Current tag for the release'
-    required: false
-    default: '0'
 outputs:
   next_tag:
     description: 'Next tag for the release'
@@ -31,4 +26,4 @@ runs:
     - name: Get next tag
       id: get_next_tag
       shell: bash
-      run: ./src/etc/setTag.sh ${{ inputs.current-tag }}
+      run: ./src/etc/setTag.sh
