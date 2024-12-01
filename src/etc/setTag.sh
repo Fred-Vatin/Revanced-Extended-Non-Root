@@ -61,7 +61,9 @@ while true; do
             fi
             if is_positive_integer "$2"; then
                 CHECK=$2
-                green_log "Check next_tag OK with value: $2"
+								echo "check_tag=$CHECK" >> $GITHUB_OUTPUT
+
+                green_log "Check next_tag OK with value: $CHECK"
                 exit 0
             else
                 show_help
