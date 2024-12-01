@@ -8,7 +8,8 @@ else
   message="utils.sh can not be loaded"
   echo >&2 -e "\033[0;31m[-] $message\033[0m"
   if [ "${GITHUB_REPOSITORY-}" ]; then 
-    echo -e "::error::$message\n"
+    echo -e "::error::ABORT-$message\n"
+    exit 1
   fi
 fi
 
