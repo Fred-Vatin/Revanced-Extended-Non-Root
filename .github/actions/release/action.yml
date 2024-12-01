@@ -25,7 +25,7 @@ runs:
       run: |
         echo "Create tag: ${{ inputs.next_tag }}"
         echo "github.ref_name: ${{ github.ref_name }}"
-        git tag -f ${{ inputs.next_tag }};git push -f origin ${{ inputs.next_tag }}
+        # git tag -f ${{ inputs.next_tag }};git push -f origin ${{ inputs.next_tag }}
       
     - name: Release
       uses: ncipollo/release-action@v1.14.0
