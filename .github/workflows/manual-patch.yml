@@ -38,7 +38,10 @@ jobs:
         uses: ./.github/actions/set-next-tag
       
       - name: Verify next tag output
-        run: echo "Next tag is ${{ steps.set_next_tag.outputs.next_tag }}"
+        shell: bash
+        run: |
+          echo "next_tag is : ${{ steps.set_next_tag.outputs.next_tag }}"
+          echo "NEXT_TAG is : ${{ steps.set_next_tag.outputs.NEXT_TAG }}"
         
   test-job:
     name: Test Job
