@@ -57,11 +57,11 @@ jobs:
       - name: Create test file
         if: steps.check-gh-test.outputs.internet_error == '0'
         run: |
-          echo "This is a test file for tag : n${{ needs.set-next-tag.outputs.next_tag }} or N${{ needs.set-next-tag.outputs.NEXT_TAG }}" | tee test-file.txt
+          echo "This is a test file for tag: n${{ needs['set-next-tag'].outputs.next_tag }} or N${{ needs['set-next-tag'].outputs.NEXT_TAG }}" | tee test-file.txt
       - name: Release test file
         uses: ./.github/actions/release
         with:
-          next_tag: ${{ needs.set-next-tag.outputs.next_tag }}
+          next_tag: ${{ needs['set-next-tag'].outputs.next_tag }}
   patch_rv:
     name: Patch Revanced Stable
     if: ${{ github.event.inputs.org == 'Revanced' || inputs.org == 'Revanced' }}
