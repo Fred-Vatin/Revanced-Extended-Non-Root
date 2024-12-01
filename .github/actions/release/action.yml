@@ -16,7 +16,7 @@ runs:
       shell: bash
       run: |
         echo "
-        **Change log** (${{ inputs.next_tag }}) :point_down:
+        **Change log** :point_down:
         [Revanced](https://github.com/revanced/revanced-patches/releases)
         [Revanced Extended](https://github.com/inotia00/revanced-patches/releases)
         "> ${{ github.workspace }}/CHANGELOG.txt
