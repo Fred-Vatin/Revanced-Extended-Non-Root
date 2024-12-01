@@ -64,6 +64,7 @@ jobs:
         uses: ./.github/actions/release
         with:
           next_tag: $NEXT_TAG
+          github_token: $GITHUB_TOKEN
   patch_rv:
     name: Patch Revanced Stable
     if: ${{ github.event.inputs.org == 'Revanced' || inputs.org == 'Revanced' }}
