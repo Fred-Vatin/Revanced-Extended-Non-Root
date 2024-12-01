@@ -55,10 +55,6 @@ while true; do
                 show_help
                 abort "--check is empty. It requires a positiver integer argument." 
             fi
-            # if is_string "$2"; then
-            #     show_help
-            #     abort "--check is a string with value: $2. It requires a non-negative integer argument."
-            # fi
             if is_positive_integer "$2"; then
                 CHECK=$2
 								echo "check_tag=$CHECK" >> $GITHUB_OUTPUT
