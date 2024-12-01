@@ -27,6 +27,8 @@ on:
 jobs:
   set-next-tag:    
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.set_next_tag.outputs.next_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,23 +38,17 @@ jobs:
       - name: Set Next Tag
         id: set_next_tag
         uses: ./.github/actions/set-next-tag
-      
-      - name: Verify next tag output
-        shell: bash
-        run: |
-          echo "next_tag is : ${{ steps.set_next_tag.outputs.next_tag }}"
-          echo "NEXT_TAG is : ${{ steps.set_next_tag.outputs.NEXT_TAG }}"
-          echo "GITHUB_ENV content:"
-          cat $GITHUB_ENV
-          echo "GITHUB_OUTPUT content:"
-          cat $GITHUB_OUTPUT
         
   test-job:
     name: Test Job
-    if: ${{ github.event.inputs.org == 'Test' || inputs.org == 'Test' }}
+    if: ${{ github.event.inputs.org == 'Test' || inputs.org == 'Test' }}    
     needs: set-next-tag
     runs-on: ubuntu-latest
+    env:
+      NEXT_TAG: ${{needs.set-next-tag.outputs.output1}}
     steps:
+      - name: Check tag
+        run: bash src/etc/setTag.sh --check $NEXT_TAG
       - name: Checkout
         uses: actions/checkout@v4
       - name: Check github connection
@@ -61,11 +57,11 @@ jobs:
       - name: Create test file
         if: steps.check-gh-test.outputs.internet_error == '0'
         run: |
-          echo "This is a test file for tag: n${{ needs.set-next-tag.steps.set_next_tag.outputs.next_tag }} or N${{ needs.set-next-tag.steps.set_next_tag.outputs.NEXT_TAG }}" | tee test-file.txt
+          echo "This is a test file for tag: $NEXT_TAG" | tee test-file.txt
       - name: Release test file
         uses: ./.github/actions/release
         with:
-          next_tag: ${{ needs.set-next-tag.steps.set_next_tag.outputs.next_tag }}
+          next_tag: $NEXT_TAG
   patch_rv:
     name: Patch Revanced Stable
     if: ${{ github.event.inputs.org == 'Revanced' || inputs.org == 'Revanced' }}
