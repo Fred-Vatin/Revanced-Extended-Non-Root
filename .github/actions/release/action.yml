@@ -25,12 +25,12 @@ runs:
         git tag -f ${{ inputs.next_tag }};git push -f origin ${{ inputs.next_tag }}
       
     - name: Release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          body: ${{ github.workspace }}-CHANGELOG.txt
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./*.{txt,apk}
-          release_name: "Revanced & Revanced Extended"
-          tag: ${{ inputs.next_tag }}
-          file_glob: true
-          overwrite: true
+      uses: svenstaro/upload-release-action@v2
+      with:
+        body: ${{ github.workspace }}-CHANGELOG.txt
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ./*.{txt,apk}
+        release_name: "Revanced & Revanced Extended"
+        tag: ${{ inputs.next_tag }}
+        file_glob: true
+        overwrite: true
