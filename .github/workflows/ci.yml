@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4.1.1
       - name: Check github connection
         id: check-gh
-        run: bash src/etc/connection.sh
+        run: bash src/modules/connection.sh
       - name: Check new patch ReVanced
         id: check-rv
         if: steps.check-gh.outputs.internet_error == '0'

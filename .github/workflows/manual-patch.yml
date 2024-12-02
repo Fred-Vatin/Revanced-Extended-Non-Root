@@ -55,7 +55,7 @@ jobs:
           next_tag: $NEXT_TAG
       - name: Check github connection
         id: check-gh-test
-        run: bash src/etc/connection.sh
+        run: bash src/modules/connection.sh
       - name: Create test file
         if: steps.check-gh-test.outputs.internet_error == '0'
         run: |
@@ -85,7 +85,7 @@ jobs:
         uses: ./.github/actions/preparing
       - name: Check github connection
         id: check-gh-rv
-        run: bash src/etc/connection.sh
+        run: bash src/modules/connection.sh
       - name: Patch apk
         id: patch-rv
         if: steps.check-gh-rv.outputs.internet_error == '0'
@@ -117,7 +117,7 @@ jobs:
         uses: ./.github/actions/preparing
       - name: Check github connection
         id: check-gh-rvb
-        run: bash src/etc/connection.sh
+        run: bash src/modules/connection.sh
       - name: Patch apk
         id: patch-rvb
         if: steps.check-gh-rvb.outputs.internet_error == '0'
@@ -149,7 +149,7 @@ jobs:
         uses: ./.github/actions/preparing
       - name: Check github connection
         id: check-gh-rve
-        run: bash src/etc/connection.sh
+        run: bash src/modules/connection.sh
       - name: Patch apk
         id: patch-rve
         if: steps.check-gh-rve.outputs.internet_error == '0'
@@ -181,7 +181,7 @@ jobs:
         uses: ./.github/actions/preparing
       - name: Check github connection
         id: check-gh-rve-beta
-        run: bash src/etc/connection.sh
+        run: bash src/modules/connection.sh
       - name: Patch apk
         id: patch-rve-beta
         if: steps.check-gh-rve-beta.outputs.internet_error == '0'
