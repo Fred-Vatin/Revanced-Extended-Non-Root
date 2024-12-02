@@ -8,12 +8,10 @@ runs:
         distribution: 'zulu'
         java-version: '17'
     - name: Install last jq version
-      uses: dcarbone/install-jq-action@v3.0.1
+      uses: vegardit/gha-setup-jq@v1
       with:
-        version: '1.7'
-        force:
-          required: true
-          description: "Setting this to true will install the version you specify into the tool cache, superseding the preinstalled version."
+        use-cache: true
+        version: 1.7.1
     - name: Install yq to handle toml
       uses: Makepad-fr/setup-yq-action@main
       with:
@@ -21,7 +19,8 @@ runs:
     - name: Check if jq and yq are installed
       shell: bash
       run: |
-        source ./src/etc/utils.sh
+        echo '::group::Check jq and yq installation'
+        source ./src/etc/utils.sh        
         if command -v jq > /dev/null; then
           jqv=$(jq --version)
           blue_log "jq version installed: $jqv"
