@@ -14,10 +14,6 @@ runs:
         force:
           required: true
           description: "Setting this to true will install the version you specify into the tool cache, superseding the preinstalled version."
-        found:
-          description: "If 'true', jq was already found on this runner"
-        installed:
-          description: "If 'true', jq was installed by this action"
     - name: Install yq to handle toml
       uses: Makepad-fr/setup-yq-action@main
       with:
