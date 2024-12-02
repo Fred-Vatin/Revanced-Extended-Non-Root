@@ -2,15 +2,15 @@
 source ./src/etc/utils.sh
 
 # -- check if utils is loaded --
-if declare -f green_log > /dev/null; then
-  green_log "utils.sh has been loaded"
+if declare -f green_log >/dev/null; then
+	green_log "utils.sh has been loaded"
 else
-  message="utils.sh can not be loaded"
-  echo >&2 -e "\033[0;31m[-] $message\033[0m"
-  if [ "${GITHUB_REPOSITORY-}" ]; then 
-    echo -e "::error::ABORT-$message\n"
-    exit 1
-  fi
+	message="utils.sh can not be loaded"
+	echo >&2 -e "\033[0;31m[-] $message\033[0m"
+	if [ "${GITHUB_REPOSITORY-}" ]; then
+		echo -e "::error::ABORT-$message\n"
+		exit 1
+	fi
 fi
 
 mkdir ./release ./download
@@ -23,44 +23,92 @@ HTMLQ="./htmlq"
 wget -q -O ./APKEditor.jar https://github.com/REAndroid/APKEditor/releases/download/V1.4.1/APKEditor-1.4.1.jar
 APKEditor="./APKEditor.jar"
 
+# Display all available env vars
+printenv
+
+#################################################
+# GLOBAL DEFAULT VARS
+CHANGELOG="$GITHUB_WORKSPACE/CHANGELOG.txt"
+GHURL="https://github.com"
 #################################################
 
-# Download Github assets requirement:
+# init changelog
+echo -e "Install [Microg](https://github.com/ReVanced/GmsCore/releases) for non-root YouTube and YT Music APKs\n\n" >>$CHANGELOG
+echo "## USED ASSETS FOR THE BUILD" >>$CHANGELOG
+
+# Description : Download Github assets requirement
+# Usage       : dl_gh <repos list> <owner> <tag>
+# Parameters  :
+#   repos list (str) : all repos where to download the assets
+#   owner (str) 		 : the repo owner
+#   tag (str)  		   : can be any valid tag or "latest" (stable) or "prerelease" (beta)
+# Return      : none
+# Example     :	dl_gh "revanced-patches revanced-integrations revanced-cli" "inotia00" "latest"
 dl_gh() {
-	if [ $3 == "prerelease" ]; then
-		local repo=$1
-		for repo in $1 ; do
-			local owner=$2 tag=$3 found=0 assets=0
-			releases=$(wget -qO- "https://api.github.com/repos/$owner/$repo/releases")
+	local REPOS=$1 OWNER=$2 TAG=$3 exit_status=0
+
+	# local repo=$REPOS
+
+	if [ $TAG == "prerelease" ]; then
+		echo "You chose to include **PRE-RELEASE**" >>$CHANGELOG
+		for repo in $REPOS; do
+			local found=0 assets=0
+			releases=$(wget -qO- "https://api.github.com/repos/$OWNER/$repo/releases")
+			exit_status=$?
+
+			if [ $exit_status -ne 0 ]; then
+				abort "Dowloading “https://api.github.com/repos/$OWNER/$repo/releases” failed. wget returned error $exit_status."
+				exit_status=0
+				return 1
+			else
+				green_log "Found JSON in “https://api.github.com/repos/$OWNER/$repo/releases”"
+			fi
+
 			while read -r line; do
 				if [[ $line == *"\"tag_name\":"* ]]; then
 					tag_name=$(echo $line | cut -d '"' -f 4)
-					if [ "$tag" == "latest" ] || [ "$tag" == "prerelease" ]; then
-						found=1
-					else
-						found=0
-					fi
+					# if [ "$TAG" == "latest" ] || [ "$TAG" == "prerelease" ]; then
+					# 	found=1
+					# else
+					# 	found=0
+					# fi
 				fi
 				if [[ $line == *"\"prerelease\":"* ]]; then
 					prerelease=$(echo $line | cut -d ' ' -f 2 | tr -d ',')
-					if [ "$tag" == "prerelease" ] && [ "$prerelease" == "true" ] ; then
+					if [ "$prerelease" == "true" ]; then
 						found=1
-      					elif [ "$tag" == "prerelease" ] && [ "$prerelease" == "false" ]; then
-	   					found=1
+						echo "*found last release is a pre-release*" >>$CHANGELOG
+					elif [ "$prerelease" == "false" ]; then
+						found=1
+						echo "*but found last release is not a pre-release*" >>$CHANGELOG
+					else
+						found=0
+						echo "*but could not found pre-release mention in release*" >>$CHANGELOG
 					fi
 				fi
 				if [[ $line == *"\"assets\":"* ]]; then
 					if [ $found -eq 1 ]; then
 						assets=1
+						blue_log "Found assets to download"
 					fi
 				fi
 				if [[ $line == *"\"browser_download_url\":"* ]]; then
 					if [ $assets -eq 1 ]; then
 						url=$(echo $line | cut -d '"' -f 4)
-							if [[ $url != *.asc ]]; then
+						if [[ $url != *.asc ]]; then
 							name=$(basename "$url")
 							wget -q -O "$name" "$url"
-							green_log "[+] Downloading $name from $owner"
+							exit_status=$?
+
+							if [ $exit_status -ne 0 ]; then
+								abort "Dowloading “$url” in file “$name” failed. wget returned error $exit_status."
+								exit_status=0
+								return 1
+							else
+								green_log "Downloaded $name from $GHURL/$OWNER/$repo"
+							fi
+
+							echo "[$repo]($GHURL/$OWNER/$repo) $tag_name by [$OWNER]($GHURL/$OWNER)" >>$CHANGELOG
 						fi
 					fi
 				fi
@@ -70,19 +118,45 @@ dl_gh() {
 						break
 					fi
 				fi
-			done <<< "$releases"
+			done <<<"$releases"
 		done
 	else
-		for repo in $1 ; do
-			tags=$( [ "$3" == "latest" ] && echo "latest" || echo "tags/$3" )
-			wget -qO- "https://api.github.com/repos/$2/$repo/releases/$tags" \
-			| jq -r '.assets[] | "\(.browser_download_url) \(.name)"' \
-			| while read -r url names; do
-   				if [[ $url != *.asc ]]; then
-					green_log "[+] Downloading $names from $2"
+		for repo in $REPOS; do
+			if [ $TAG != "latest"]; then
+				echo "You chose to use the specific version: **$TAG**" >>$CHANGELOG
+			elif [ $TAG == "latest"]; then
+				echo "You chose to use the latest version available" >>$CHANGELOG
+			fi
+
+			tags=$([ "$TAG" == "latest" ] && echo "latest" || echo "tags/$TAG")
+
+			releases=$(wget -qO- "https://api.github.com/repos/$OWNER/$repo/releases/$tags")
+			exit_status=$?
+
+			if [ $exit_status -ne 0 ]; then
+				abort "Dowloading “https://api.github.com/repos/$OWNER/$repo/releases/$tags” failed. wget returned error $exit_status."
+				exit_status=0
+				return 1
+			else
+				green_log "Found JSON in “https://api.github.com/repos/$OWNER/$repo/releases/$tags”"
+			fi
+
+			assets=$(echo "$releases" | jq -r '.assets[] | "\(.browser_download_url) \(.name)"')
+
+			while read -r url names; do
+				if [[ $url != *.asc ]]; then
 					wget -q -O "$names" $url
-     				fi
-			done
+					exit_status=$?
+
+					if [ $exit_status -ne 0 ]; then
+						abort "Dowloading “$url” in file “$names failed. wget returned error $exit_status."
+						exit_status=0
+						return 1
+					else
+						green_log "Downloaded $names from $GHURL/$OWNER/$repo"
+					fi
+				fi
+			done <<< "$assets"
 		done
 	fi
 }
@@ -101,7 +175,7 @@ get_patches_key() {
 			while IFS= read -r line1; do
 				excludePatches+=" -d \"$line1\""
 				excludeLinesFound=true
-			done < src/patches/$1/exclude-patches
+			done <src/patches/$1/exclude-patches
 			while IFS= read -r line2; do
 				if [[ "$line2" == *"|"* ]]; then
 					patch_name="${line2%%|*}"
@@ -111,17 +185,17 @@ get_patches_key() {
 					includePatches+=" -e \"$line2\""
 				fi
 				includeLinesFound=true
-			done < src/patches/$1/include-patches
+			done <src/patches/$1/include-patches
 		else
 			while IFS= read -r line1; do
 				excludePatches+=" -e \"$line1\""
 				excludeLinesFound=true
-			done < src/patches/$1/exclude-patches
-			
+			done <src/patches/$1/exclude-patches
+
 			while IFS= read -r line2; do
 				includePatches+=" -i \"$line2\""
 				includeLinesFound=true
-			done < src/patches/$1/include-patches
+			done <src/patches/$1/include-patches
 		fi
 	fi
 	if [ "$excludeLinesFound" = false ]; then
@@ -138,14 +212,14 @@ get_patches_key() {
 
 # Download apks files from APKMirror:
 _req() {
-    if [ "$2" = "-" ]; then
-        wget -nv -O "$2" --header="$3" "$1" || rm -f "$2"
-    else
-        wget -nv -O "./download/$2" --header="$3" "$1" || rm -f "./download/$2"
-    fi
+	if [ "$2" = "-" ]; then
+		wget -nv -O "$2" --header="$3" "$1" || rm -f "$2"
+	else
+		wget -nv -O "./download/$2" --header="$3" "$1" || rm -f "./download/$2"
+	fi
 }
 req() {
-    _req "$1" "$2" "User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.58 Mobile Safari/537.36"
+	_req "$1" "$2" "User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.58 Mobile Safari/537.36"
 }
 
 dl_apk() {
@@ -156,7 +230,7 @@ dl_apk() {
 		url="https://www.apkmirror.com$(req "$url" - | tr '\n' ' ' | sed -n "s/href=\"/@/g; s;.*${regexp}.*;\1;p")"
 	fi
 	url=$(req "$url" - | $HTMLQ --base https://www.apkmirror.com --attribute href ".downloadButton")
-   	url=$(req "$url" - | $HTMLQ --base https://www.apkmirror.com --attribute href "span > a[rel = nofollow]")
+	url=$(req "$url" - | $HTMLQ --base https://www.apkmirror.com --attribute href "span > a[rel = nofollow]")
 	req "$url" "$output"
 }
 get_apk() {
@@ -166,12 +240,12 @@ get_apk() {
 		url_regexp='BUNDLE<\/span>'
 	else
 		case $5 in
-			arm64-v8a) url_regexp='arm64-v8a'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
-			armeabi-v7a) url_regexp='armeabi-v7a'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
-			x86) url_regexp='x86'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
-			x86_64) url_regexp='x86_64'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
-			*) url_regexp='$5'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
-		esac 
+		arm64-v8a) url_regexp='arm64-v8a'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
+		armeabi-v7a) url_regexp='armeabi-v7a'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
+		x86) url_regexp='x86'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
+		x86_64) url_regexp='x86_64'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
+		*) url_regexp='$5'"[^@]*$7"''"[^@]*$6"'</div>[^@]*@\([^"]*\)' ;;
+		esac
 	fi
 	if [ -z "$version" ] && [ "$version" != "latest" ]; then
 		if [[ $(ls revanced-cli-*.jar) =~ revanced-cli-([0-9]+) ]]; then
@@ -196,7 +270,7 @@ get_apk() {
 			done
 			version=$(echo -e "${_versions[*]}" | sed -n "$((attempt + 1))p")
 		fi
-  		version=$(echo "$version" | tr -d ' ' | sed 's/\./-/g')
+		version=$(echo "$version" | tr -d ' ' | sed 's/\./-/g')
 		green_log "[+] Downloading $3 version: $version $5 $6 $7"
 		if [[ $5 == "Bundle" ]] || [[ $5 == "Bundle_extract" ]]; then
 			local base_apk="$2.apkm"
@@ -204,9 +278,9 @@ get_apk() {
 			local base_apk="$2.apk"
 		fi
 		local dl_url=$(dl_apk "https://www.apkmirror.com/apk/$4-$version-release/" \
-							  "$url_regexp" \
-							  "$base_apk" \
-							  "$5")
+			"$url_regexp" \
+			"$base_apk" \
+			"$5")
 		if [[ -f "./download/$base_apk" ]]; then
 			green_log "[+] Successfully downloaded $2"
 			break
@@ -222,9 +296,9 @@ get_apk() {
 	fi
 	if [[ $5 == "Bundle" ]]; then
 		green_log "[+] Merge splits apk to standalone apk"
-		java -jar $APKEditor m -i ./download/$2.apkm -o ./download/$2.apk > /dev/null 2>&1
+		java -jar $APKEditor m -i ./download/$2.apkm -o ./download/$2.apk >/dev/null 2>&1
 	elif [[ $5 == "Bundle_extract" ]]; then
-		unzip "./download/$base_apk" -d "./download/$(basename "$base_apk" .apkm)" > /dev/null 2>&1
+		unzip "./download/$base_apk" -d "./download/$(basename "$base_apk" .apkm)" >/dev/null 2>&1
 	fi
 }
 
@@ -257,10 +331,10 @@ patch() {
 			fi
 		fi
 		eval java -jar *cli*.jar $p$b $m$opt--out=./release/$1-$2.apk$excludePatches$includePatches --keystore=./src/$ks.keystore $pu $a./download/$1.apk
-  		unset version
+		unset version
 		unset excludePatches
 		unset includePatches
-	else 
+	else
 		red_log "[-] Not found $1.apk"
 		exit 1
 	fi
@@ -269,31 +343,31 @@ patch() {
 #################################################
 
 split_editor() {
-    if [[ -z "$3" || -z "$4" ]]; then
-        green_log "[+] Merge splits apk to standalone apk"
-        java -jar $APKEditor m -i "./download/$1" -o "./download/$1.apk" > /dev/null 2>&1
-        return 0
-    fi
-    IFS=' ' read -r -a include_files <<< "$4"
-    mkdir -p "./download/$2"
-    for file in "./download/$1"/*.apk; do
-        filename=$(basename "$file")
-        basename_no_ext="${filename%.apk}"
-        if [[ "$filename" == "base.apk" ]]; then
-            cp -f "$file" "./download/$2/" > /dev/null 2>&1
-            continue
-        fi
-        if [[ "$3" == "include" ]]; then
-            if [[ " ${include_files[*]} " =~ " ${basename_no_ext} " ]]; then
-                cp -f "$file" "./download/$2/" > /dev/null 2>&1
-            fi
-        elif [[ "$3" == "exclude" ]]; then
-            if [[ ! " ${include_files[*]} " =~ " ${basename_no_ext} " ]]; then
-                cp -f "$file" "./download/$2/" > /dev/null 2>&1
-            fi
-        fi
-    done
+	if [[ -z "$3" || -z "$4" ]]; then
+		green_log "[+] Merge splits apk to standalone apk"
+		java -jar $APKEditor m -i "./download/$1" -o "./download/$1.apk" >/dev/null 2>&1
+		return 0
+	fi
+	IFS=' ' read -r -a include_files <<<"$4"
+	mkdir -p "./download/$2"
+	for file in "./download/$1"/*.apk; do
+		filename=$(basename "$file")
+		basename_no_ext="${filename%.apk}"
+		if [[ "$filename" == "base.apk" ]]; then
+			cp -f "$file" "./download/$2/" >/dev/null 2>&1
+			continue
+		fi
+		if [[ "$3" == "include" ]]; then
+			if [[ " ${include_files[*]} " =~ " ${basename_no_ext} " ]]; then
+				cp -f "$file" "./download/$2/" >/dev/null 2>&1
+			fi
+		elif [[ "$3" == "exclude" ]]; then
+			if [[ ! " ${include_files[*]} " =~ " ${basename_no_ext} " ]]; then
+				cp -f "$file" "./download/$2/" >/dev/null 2>&1
+			fi
+		fi
+	done
 
-    green_log "[+] Merge splits apk to standalone apk"
-    java -jar $APKEditor m -i ./download/$2 -o ./download/$2.apk > /dev/null 2>&1
+	green_log "[+] Merge splits apk to standalone apk"
+	java -jar $APKEditor m -i ./download/$2 -o ./download/$2.apk >/dev/null 2>&1
 }
