@@ -7,6 +7,38 @@ runs:
       with:
         distribution: 'zulu'
         java-version: '17'
+    - name: Install last jq version
+      uses: dcarbone/install-jq-action@v3.0.1
+      with:
+        version: '1.7'
+        force:
+          required: true
+          description: "Setting this to true will install the version you specify into the tool cache, superseding the preinstalled version."
+        found:
+          description: "If 'true', jq was already found on this runner"
+        installed:
+          description: "If 'true', jq was installed by this action"
+    - name: Install yq to handle toml
+      uses: Makepad-fr/setup-yq-action@main
+      with:
+        version: '4.44.5'
+    - name: Check if jq and yq are installed
+      shell: bash
+      run: |
+        source ./src/etc/utils.sh
+        if command -v jq > /dev/null; then
+          jqv=$(jq --version)
+          blue_log "jq version installed: $jqv"
+        else
+          abort "jq is not installed"
+        fi
+        if command -v yq > /dev/null; then
+          yqv=$(yq --version)
+          blue_log "yq version installed: $yqv"
+        else
+          abort "yq is not installed"
+        fi    
+        
 #    - name: Setup Cloudflare Warp
 #      shell: bash
 #      run: bash src/etc/cf_warp.sh
