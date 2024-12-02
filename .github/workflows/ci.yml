@@ -25,19 +25,19 @@ jobs:
       - name: Check new patch ReVanced
         id: check-rv
         if: steps.check-gh.outputs.internet_error == '0'
-        run: bash src/etc/ci.sh ReVanced/revanced-patches latest youtube-revanced.apk
+        run: bash src/modules/ci.sh ReVanced/revanced-patches latest youtube-revanced.apk
       - name: Check new patch ReVanced Beta
         id: check-rv-beta
         if: steps.check-gh.outputs.internet_error == '0'
-        run: bash src/etc/ci.sh ReVanced/revanced-patches prerelease youtube-beta-revanced.apk
+        run: bash src/modules/ci.sh ReVanced/revanced-patches prerelease youtube-beta-revanced.apk
       - name: Check new patch Revanced Extended
         id: check-rve
         if: steps.check-gh.outputs.internet_error == '0'
-        run: bash src/etc/ci.sh inotia00/revanced-patches latest youtube-revanced-extended.apk
+        run: bash src/modules/ci.sh inotia00/revanced-patches latest youtube-revanced-extended.apk
       - name: Check new patch Revanced Extended Beta
         id: check-rve-beta
         if: steps.check-gh.outputs.internet_error == '0'
-        run: bash src/etc/ci.sh inotia00/revanced-patches prerelease youtube-beta-revanced-extended.apk
+        run: bash src/modules/ci.sh inotia00/revanced-patches prerelease youtube-beta-revanced-extended.apk
       - name: Keep workflow run
         if: steps.check-gh.outputs.internet_error == '0'
         uses: gautamkrishnar/keepalive-workflow@v1
