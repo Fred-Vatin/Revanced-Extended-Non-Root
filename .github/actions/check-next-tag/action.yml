@@ -14,14 +14,19 @@ runs:
     - name: Check if setTag.sh exists
       shell: bash
       run: |
+        echo '::group::Check if setTag.sh exists'
         SET_TAG_SCRIPT=./src/etc/setTag.sh
         if [ ! -f $SET_TAG_SCRIPT ]; then echo -e "::error::utils.sh [-] File not found: $SET_TAG_SCRIPT\n"; exit 1; fi
 
     - name: Make setTag.sh executable
       shell: bash
-      run: chmod +x ./src/etc/setTag.sh
+      run: |
+        echo '::group::Make setTag.sh executable'
+        chmod +x ./src/etc/setTag.sh
 
     - name: Check next tag
       id: check_next_tag
       shell: bash
-      run: ./src/etc/setTag.sh --check ${{ inputs.next_tag }}
+      run: |
+        echo '::group::Check next tag'
+        ./src/etc/setTag.sh --check ${{ inputs.next_tag }}
