@@ -6,7 +6,9 @@
 		// check install with "shfmt --version" in a terminal
 		"ghcr.io/devcontainers-extra/features/shfmt:1": {},
 		// check install with "bun --version" in a terminal
-		"ghcr.io/prulloac/devcontainer-features/bun:1": {}
+		"ghcr.io/prulloac/devcontainer-features/bun:1": {},
+		// check install with "jq --version" and "yq --version" in a terminal
+		"ghcr.io/larsnieuwenhuizen/features/jqyq:0": {}
 	},
 
 	"customizations": {
