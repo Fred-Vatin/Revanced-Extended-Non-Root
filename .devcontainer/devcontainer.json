@@ -453,7 +453,7 @@
 				"prettier.vueIndentScriptAndStyle": true,
 				"relativePath.excludedExtensions": [],
 				"relativePath.ignore": ["**/*.dll", "**/.git/**", "**/node_modules/**", "**/obj/**", "**/objd/**"],
-				"shellformat.path": "",
+				"shellformat.path": "/usr/local/bin/shfmt",
 				"sort-json.settings.defaultCustomSort": "",
 				"sort-json.settings.listSortType": "Value",
 				"sort-json.settings.orderOverrideKeys": [
