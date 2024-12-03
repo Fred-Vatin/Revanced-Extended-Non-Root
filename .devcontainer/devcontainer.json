@@ -43,6 +43,7 @@
 				"yatki.vscode-surround",
 				"yechunan.json-color-token"
 			],
+			// VSCode settings (use ".vscode/settings.json" if you want to override these one)
 			"settings": {
 				// VSCODE SETTINGS
 				"[css]": {
@@ -523,6 +524,4 @@
 			}
 		}
 	}
-
-	// VSCode settings (use ".vscode/settings.json" if you want to override these one)
 }
