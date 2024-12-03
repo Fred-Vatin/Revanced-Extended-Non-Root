@@ -3,7 +3,9 @@
 
 	// install extra tools
 	"features": {
+		// check install with "shfmt --version" in a terminal
 		"ghcr.io/devcontainers-extra/features/shfmt:1": {},
+		// check install with "bun --version" in a terminal
 		"ghcr.io/prulloac/devcontainer-features/bun:1": {}
 	},
 
